@@ -5,7 +5,8 @@ const FileBookmark =  "Obsidian"
 const fmgr = FileManager.local()
 const TaskIdentifier = "#todo"
 const LineBreaks = "\n"
-const search_task = "- [ ] "
+const ignore_files = [".git",".gitignore",".obsidian"]
+const search_task = ["- [ ] ","- [/] "]
 const search_date = "📅"
 
 
@@ -31,14 +32,30 @@ function checkSetup(){
     }
 }
 
-function filter_in_array(array, pattern){
-    //keep items when pattern found
-    return array.filter((element) => element.indexOf(pattern) > -1)
+function makeArray(item){
+    if(typeof item == "string"){
+        item = [item]
+    }else if(! Array.isArray(item)){
+        console.error("Unknown item type: " + typeof item + " - " + item)
+        Script.complete()
+    }
+    return item
 }
 
-function filter_not_in_array(array, pattern){
+function filter_in_array(array, pattern_list){
+    //keep items when pattern found
+    pattern_list = makeArray(pattern_list)
+    return array.filter(element => 
+        pattern_list.some(pattern => element.includes(pattern))
+    );
+}
+
+function filter_not_in_array(array, pattern_list){
     //keep items when pattern not found
-    return array.filter((element) => element.indexOf(pattern) == -1)
+    pattern_list = makeArray(pattern_list)
+    return array.filter(element => 
+        !pattern_list.some(pattern => element.includes(pattern))
+    );
 }
 
 function getTasks(file){
@@ -98,9 +115,7 @@ function iterateFiles(root_path) {
             let list_files = fmgr.listContents(item)
 
             //Filter .git + .obsidian files
-            list_files = filter_not_in_array(list_files, ".git")
-            list_files = filter_not_in_array(list_files, ".gitignore")
-            list_files = filter_not_in_array(list_files, ".obsidian")
+            list_files = filter_not_in_array(list_files, ignore_files)
 
             //merge files with path
             list_files = list_files.map(i => item + "/" + i)
@@ -115,7 +130,7 @@ function iterateFiles(root_path) {
                     let pos_date = task.indexOf(search_date)
                     let date = task.substring(pos_date+2, pos_date+2+11)
 
-                    let pos_task = task.indexOf(search_task)
+                    let pos_task = search_task.findIndex(pattern => task.includes(pattern))
                     let body = task.substring(pos_task+5, pos_date)
 
                     let identifier = hashCode(item) + "-" + hashCode(body)
@@ -154,3 +169,4 @@ async function main(){
 }
 
 main()
+Script.complete()

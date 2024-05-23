@@ -1,11 +1,11 @@
 const date_format = "yyyy-MM-dd HH:mm"
 const NotificationTime = "09:00"
-const NotificationGroup = "Obisidian"
+const NotificationGroup = "Obsidian"
 const FileBookmark =  "Obsidian"
 const fmgr = FileManager.local()
 const TaskIdentifier = "#todo"
 const LineBreaks = "\n"
-const ignore_files = [".git",".gitignore",".obsidian"]
+const ignore_files = [".git",".gitignore",".obsidian"] //if file contains these strings
 const search_task = ["- [ ] ","- [/] "]
 const search_date = "📅"
 

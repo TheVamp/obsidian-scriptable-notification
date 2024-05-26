@@ -1,13 +1,17 @@
-const date_format = "yyyy-MM-dd HH:mm"
-const NotificationTime = "09:00"
-const NotificationGroup = "Obsidian"
-const FileBookmark =  "Obsidian"
+//User constants
+const NotificationTime = "09:00" // When do I want to be notified about all tasks
+const NotificationGroup = "Obsidian" // Title of the Notification
+const FileBookmark =  "Obsidian" //File Bookmark in scriptable
+const TaskIdentifier = ["#todo"]
+const IgnoreIdentifier = [] // if certain tasks should be ignored
+
+//Technical constants
 const fmgr = FileManager.local()
-const TaskIdentifier = "#todo"
 const LineBreaks = "\n"
 const ignore_files = [".git",".gitignore",".obsidian"] //if file contains these strings
 const search_task = ["- [ ] ","- [/] "]
 const search_date = "📅"
+const date_format = "yyyy-MM-dd HH:mm"
 
 
 function readTasksConfig(){
@@ -70,6 +74,9 @@ function getTasks(file){
         items = filter_in_array(items, search_date)
         if(TaskIdentifier.length > 0){
             items = filter_in_array(items, TaskIdentifier)
+        }
+        if(IgnoreIdentifier.length > 0){
+            items = filter_not_in_array(items, IgnoreIdentifier)
         }
 
         return items

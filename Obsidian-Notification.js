@@ -2,7 +2,7 @@
 const NotificationTime = "09:00" // When do I want to be notified about all tasks
 const NotificationGroup = "Obsidian" // Title of the Notification
 const FileBookmark =  "Obsidian" //File Bookmark in scriptable
-const TaskIdentifier = ["#todo"]
+const TaskIdentifier = ["#todo"] // only use tasks with these elements
 const IgnoreIdentifier = [] // if certain tasks should be ignored
 
 //Technical constants
@@ -87,11 +87,21 @@ function getTasks(file){
 }
 
 function Notification_create(title, body, date, identifier){
+
     let today = new Date()
     let fmt = new DateFormatter()
     fmt.dateFormat = date_format
     let date_target = date + " " + NotificationTime
     date_target = fmt.date(date_target)
+
+    //if Task is in the past, remind tomorrow
+    if(date_target < today){
+        today.setDate(today.getDate() + 1)
+        let notification_hours = NotificationTime.split(":")
+
+        today.setHours(notification_hours[0],notification_hours[1])
+        date_target = today
+    }
 
     let note = new Notification()
     note.identifier = identifier
@@ -99,13 +109,6 @@ function Notification_create(title, body, date, identifier){
     note.subtitle = title
     note.body = body
 
-    //if Task is in the past, remind tomorrow
-    if(date_target < today){
-        today.setDate(today.getDate() + 1)
-        //TODO: hardcoded, should be configured via const
-        today.setHours(9,0)
-        date_target = today
-    }
     note.setTriggerDate(date_target)
     note.schedule()
 }
@@ -136,7 +139,7 @@ function iterateFiles(root_path) {
                 tasks.forEach(task => {
                     let pos_date = task.indexOf(search_date)
                     let date = task.substring(pos_date+2, pos_date+2+11)
-
+                    
                     let pos_task = search_task.findIndex(pattern => task.includes(pattern))
                     let body = task.substring(pos_task+5, pos_date)
 

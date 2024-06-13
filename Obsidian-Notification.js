@@ -161,7 +161,9 @@ function iterateFiles(root_path) {
             console.error("Shouldnt be happen on " + item)
         }
     }
-    console.log("ToDos Notification created: " + task_count.toString())
+    let msg_done = "ToDos Notification created: " + task_count.toString()
+    console.log(msg_done)
+    return msg_done
 }
 
 async function main(){
@@ -175,8 +177,8 @@ async function main(){
         }
     });
     //iterate Files and create notifications
-    iterateFiles(path_root)
+    return iterateFiles(path_root)
 }
 
-main()
+return main()
 Script.complete()

@@ -161,7 +161,7 @@ function iterateFiles(root_path) {
             console.error("Shouldnt be happen on " + item)
         }
     }
-    let msg_done = "ToDos Notification created: " + task_count.toString()
+    let msg_done = "Notification created: " + task_count.toString()
     console.log(msg_done)
     return msg_done
 }
